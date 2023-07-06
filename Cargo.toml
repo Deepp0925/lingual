@@ -9,7 +9,7 @@ repository = "https//github.com/deepp0925/lingual"
 homepage = "https//github.com/deepp0925/lingual"
 documentation = "https//docs.rs/lingual"
 license = "MIT"
-keywords = ["Locale", "Translator", "Localization", "i18n", "Internationalization", "Internationalisation", "Language", "Translate", "Translation", "Google Translate"]
+keywords = ["Locale", "Translator", "Localization", "i18n", "Internationalization", "Internationalisation", "Language", "Translate", "Translation"]
 categories = ["i18n", "localization", "translator"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

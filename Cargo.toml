@@ -2,7 +2,7 @@
 name = "lingual"
 version = "0.0.0"
 edition = "2021"
-description = "A free and unlimited Google Translate API for Dart. You can use it for translate strings and text for educational purpose. This a port of 'translator' package from dart."
+description = "This a port of 'translator' package from dart."
 authors = ["Deep Patel <deepp0925>"]
 readme = "README.md"
 repository = "https://github.com/deepp0925/lingual"
@@ -10,8 +10,9 @@ homepage = "https://github.com/deepp0925/lingual"
 documentation = "https://docs.rs/lingual"
 license = "MIT"
 keywords = ["Locale", "Localization", "i18n", "Internationalization", "Translation"]
-categories = ["i18n", "localization", "translator", "internationalization", "language"]
+categories = [ "localization", "internationalization"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+http = "0.2.9"

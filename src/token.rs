@@ -1,31 +1,28 @@
-use std::{
-    borrow::Cow,
-    num::{IntErrorKind, ParseIntError},
-};
+use std::borrow::Cow;
 
-pub enum Errors {
-    ParseIntErr,
-}
+use crate::errors::TranslationErrors;
 
-pub fn generate_token<S: AsRef<str>>(mut text: S) -> Result<String, Errors> {
-    let _tkk = tkk();
-    let b = _tkk.0;
+pub fn generate_token<S: AsRef<str>>(text: S) -> Result<String, TranslationErrors> {
+    let b = tkk().0;
 
     let mut d = vec![];
 
-    for f in 0..text.as_ref().len() {
-        let mut g: u32 = text.as_ref().as_bytes()[f].into();
-        if g < 128 {
-            d.push(g);
+    for mut f in 0..text.as_ref().len() {
+        let a: Vec<u16> = text.as_ref().encode_utf16().collect();
+        let mut g = a[f] as i64;
+
+        if 128 > g {
+            d.push(g)
         } else {
-            if g < 2048 {
+            if 2048 > g {
                 d.push(g >> 6 | 192);
             } else {
-                if (g & 64512) == 55296
-                    && f + 1 < text.as_ref().len()
-                    && (text.as_ref().as_bytes()[f + 1] as u16 & 64512) == 56320
+                if (55296 == (g & 64512))
+                    && (f + 1 < text.as_ref().len())
+                    && (56320 == (a[f + 1] & 64512))
                 {
-                    g = 65536 + ((g & 1023) << 10) + (text.as_ref().as_bytes()[f] as u32 & 1023);
+                    f += 1;
+                    g = 65536 + ((g & 1023) << 10) + (a[f] & 1023) as i64;
                     d.push(g >> 18 | 240);
                     d.push(g >> 12 & 63 | 128);
                 } else {
@@ -37,17 +34,33 @@ pub fn generate_token<S: AsRef<str>>(mut text: S) -> Result<String, Errors> {
         }
     }
 
-    let mut a = b.parse::<u32>().map_err(|_| Errors::ParseIntErr)? + d[0];
-
-    for e in 1..d.len() {
-        a += d[e];
-        a = wr(a.into(), "+-a^+6").ok_or(Errors::ParseIntErr)? as u32;
+    let mut a = b
+        .parse::<i64>()
+        .map_err(|_| TranslationErrors::ParseIntErr)?;
+    for c in d {
+        a += c;
+        a = wr(a, "+-a^+6").ok_or(TranslationErrors::ParseIntErr)?;
     }
 
-    todo!()
+    a = wr(a, "+-3^+b+-f").ok_or(TranslationErrors::ParseIntErr)?;
+    a ^= tkk().1;
+
+    if 0 > a {
+        a = (a & 2147483647) + 2147483648;
+    }
+
+    a %= 1e6 as i64;
+
+    Ok(format!(
+        "{}.{}",
+        a,
+        a ^ b
+            .parse::<i64>()
+            .map_err(|_| TranslationErrors::ParseIntErr)?
+    ))
 }
 
-const fn tkk() -> (&'static str, u32) {
+const fn tkk() -> (&'static str, i64) {
     ("406398", 561666268 + 1526272306)
 }
 
@@ -67,7 +80,7 @@ fn wr(mut a: i64, b: &str) -> Option<i64> {
                 .to_string()
                 .into()
         } else {
-            (a << d.parse::<i32>().ok()?).to_string().into()
+            (a << d.parse::<i64>().ok()?).to_string().into()
         };
 
         a = if Cow::Borrowed("+") == b[c..c + 1] {
@@ -82,7 +95,7 @@ fn wr(mut a: i64, b: &str) -> Option<i64> {
 }
 
 fn unsigned_right_shift(mut a: i64, mut b: i64) -> i64 {
-    let mut m;
+    let m;
 
     if !(-32..32).contains(&b) {
         m = b / 32;
@@ -107,4 +120,16 @@ fn unsigned_right_shift(mut a: i64, mut b: i64) -> i64 {
     }
 
     a
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_generate_token() {
+        let text = "hello world";
+        let token = generate_token(text).unwrap();
+        println!("{}", token);
+    }
 }

@@ -1,21 +1,16 @@
-pub use errors::TranslationErrors;
+pub use errors::Errors;
 pub use language::Langs;
 pub use translation::Translation;
 mod errors;
 mod language;
 mod token;
 mod translation;
-use reqwest::{blocking::get, Url};
-use serde_json::Value;
+use reqwest::Url;
 
-const BASE_URL: &str = "https://translate.googleapis.com";
+const BASE_URL: &str = "http://translate.googleapis.com";
 const SINGLE_TRANSLATE_URL: &str = "/translate_a/single";
 
-fn generate_url<S: AsRef<str>>(
-    text: S,
-    src: Langs,
-    target: Langs,
-) -> Result<Url, TranslationErrors> {
+fn generate_url<S: AsRef<str>>(text: S, src: Langs, target: Langs) -> Result<Url, Errors> {
     let token = token::generate_token(text.as_ref())?;
 
     Url::parse_with_params(
@@ -36,44 +31,108 @@ fn generate_url<S: AsRef<str>>(
             ("q", text.as_ref()),
         ],
     )
-    .map_err(|_| TranslationErrors::UrlParseErr)
+    .map_err(|_| Errors::UrlParseErr)
 }
 
-/// Translate a text from a source language to a target language.
-/// # Arguments
-/// * `text` - The text to translate.
-/// * `src` - The source language. Optional Value, Defaults to 'Auto'.
-/// * `target` - The target language. Optional Value, Defaults to 'En'.
-/// # Returns
-/// * `Translation` - The translated text.
-pub fn translate<S: AsRef<str>>(
-    text: S,
-    src: Option<Langs>,
-    target: Option<Langs>,
-) -> Result<Translation, TranslationErrors> {
-    let src = src.unwrap_or(Langs::Auto);
-    let target = target.unwrap_or(Langs::En);
-    let url = generate_url(text.as_ref(), src, target)?;
-
-    let req = get(url).map_err(TranslationErrors::HttpErr)?;
-
-    let translated = &req.json::<Value>().map_err(TranslationErrors::HttpErr)?[0][0][0];
-
-    Ok(Translation {
-        text: translated.as_str().unwrap().to_string(),
-        src: text.as_ref().to_string(),
-        src_lang: src,
-        target_lang: target,
-    })
+enum Client {
+    #[cfg(feature = "blocking")]
+    Blocking(reqwest::blocking::Client),
+    Async(reqwest::Client),
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+pub struct Translator {
+    client: Client,
+}
 
-    #[test]
-    fn test_translate() {
-        let translation = translate("Hello World", None, Some(Langs::Es)).unwrap();
-        println!("{:?}", translation);
+impl Default for Translator {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[cfg(feature = "blocking")]
+impl Translator {
+    /// Create a new Translator instance
+    pub fn new() -> Self {
+        Self {
+            client: Client::Blocking(reqwest::blocking::Client::new()),
+        }
+    }
+
+    /// Translate a text from a source language to a target language.
+    /// # Arguments
+    /// * `text` - The text to translate.
+    /// * `src` - The source language. Optional Value, Defaults to 'Auto'.
+    /// * `target` - The target language. Optional Value, Defaults to 'En'.
+    /// # Returns
+    /// * `Translation` - The translated text.
+    pub fn translate<S: AsRef<str>>(
+        &self,
+        text: S,
+        src: Option<Langs>,
+        target: Option<Langs>,
+    ) -> Result<Translation, Errors> {
+        let src = src.unwrap_or(Langs::Auto);
+        let target = target.unwrap_or(Langs::En);
+        let url = generate_url(text.as_ref(), src, target)?;
+
+        if let Client::Blocking(client) = &self.client {
+            let req = client.get(url).send().map_err(Errors::HttpErr)?;
+            let translated = &req.json::<serde_json::Value>().map_err(Errors::HttpErr)?[0][0][0];
+            let translated = translated.as_str().ok_or(Errors::JsonParseErr)?.to_string();
+
+            return Ok(Translation {
+                text: translated,
+                src: text.as_ref().to_string(),
+                src_lang: src,
+                target_lang: target,
+            });
+        }
+
+        unreachable!()
+    }
+}
+
+#[cfg(all(feature = "default", not(feature = "blocking")))]
+impl Translator {
+    /// Create a new Translator instance
+    pub fn new() -> Self {
+        Self {
+            client: Client::Async(reqwest::Client::new()),
+        }
+    }
+
+    /// Translate a text from a source language to a target language.
+    /// # Arguments
+    /// * `text` - The text to translate.
+    /// * `src` - The source language. Optional Value, Defaults to 'Auto'.
+    /// * `target` - The target language. Optional Value, Defaults to 'En'.
+    /// # Returns
+    /// * `Translation` - The translated text.
+    pub async fn translate<S: AsRef<str>>(
+        &self,
+        text: S,
+        src: Option<Langs>,
+        target: Option<Langs>,
+    ) -> Result<Translation, Errors> {
+        let src = src.unwrap_or(Langs::Auto);
+        let target = target.unwrap_or(Langs::En);
+        let url = generate_url(text.as_ref(), src, target)?;
+
+        let Client::Async(client) = &self.client;
+
+        let req = client.get(url).send().await.map_err(Errors::HttpErr)?;
+        let translated = &req
+            .json::<serde_json::Value>()
+            .await
+            .map_err(Errors::HttpErr)?[0][0][0];
+        let translated = translated.as_str().ok_or(Errors::JsonParseErr)?.to_string();
+
+        Ok(Translation {
+            text: translated,
+            src: text.as_ref().to_string(),
+            src_lang: src,
+            target_lang: target,
+        })
     }
 }

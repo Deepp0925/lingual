@@ -1,7 +1,7 @@
-use phf::{phf_map, Map};
-
-pub type LanguageMap = Map<&'static str, Langs>;
-pub const LANGUAGES: LanguageMap = phf_map! {
+#[cfg(feature = "strings")]
+pub type LanguageMap = phf::Map<&'static str, Langs>;
+#[cfg(feature = "strings")]
+pub const LANGUAGES: LanguageMap = phf::phf_map! {
     "auto" => Langs::Auto,
     "af" => Langs::Af,
     "sq" => Langs::Sq,
@@ -124,6 +124,10 @@ pub const LANGUAGES: LanguageMap = phf_map! {
     "zu" => Langs::Zu,
 };
 
+/// The language codes supported by the API.
+/// It is also possible to use strings like "en" or "fr" instead of the enum variants but it is not recommended
+/// because it is not checked at compile time, therefore it is eliminated by default features.
+/// To enable this feature, add `strings` to the features list of the crate.
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum Langs {
     Auto,
@@ -281,6 +285,7 @@ impl From<Langs> for String {
     }
 }
 
+#[cfg(feature = "strings")]
 impl AsRef<Langs> for &str {
     fn as_ref(&self) -> &Langs {
         LANGUAGES.get(self).unwrap_or(&Langs::Auto)

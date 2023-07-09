@@ -1,7 +1,5 @@
 use std::ops::Add;
 
-use serde_json::Value;
-
 use crate::language::Langs;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -13,26 +11,30 @@ pub struct Translation {
 }
 
 impl Translation {
+    /// Get the translated text.
     pub fn text(&self) -> &str {
         &self.text
     }
 
+    /// Get the source text.
     pub fn src(&self) -> &str {
         &self.src
     }
 
+    /// Get the source language.
     pub fn src_lang(&self) -> Langs {
         self.src_lang
     }
 
+    /// Get the target language.
     pub fn target_lang(&self) -> Langs {
         self.target_lang
     }
 }
 
-impl ToString for Translation {
-    fn to_string(&self) -> String {
-        self.text.clone()
+impl AsRef<str> for Translation {
+    fn as_ref(&self) -> &str {
+        &self.text
     }
 }
 

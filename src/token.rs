@@ -1,8 +1,8 @@
 use std::borrow::Cow;
 
-use crate::errors::TranslationErrors;
+use crate::errors::Errors;
 
-pub fn generate_token<S: AsRef<str>>(text: S) -> Result<String, TranslationErrors> {
+pub(crate) fn generate_token<S: AsRef<str>>(text: S) -> Result<String, Errors> {
     let b = tkk().0;
 
     let mut d = vec![];
@@ -34,15 +34,13 @@ pub fn generate_token<S: AsRef<str>>(text: S) -> Result<String, TranslationError
         }
     }
 
-    let mut a = b
-        .parse::<i64>()
-        .map_err(|_| TranslationErrors::ParseIntErr)?;
+    let mut a = b.parse::<i64>().map_err(|_| Errors::ParseIntErr)?;
     for c in d {
         a += c;
-        a = wr(a, "+-a^+6").ok_or(TranslationErrors::ParseIntErr)?;
+        a = wr(a, "+-a^+6").ok_or(Errors::ParseIntErr)?;
     }
 
-    a = wr(a, "+-3^+b+-f").ok_or(TranslationErrors::ParseIntErr)?;
+    a = wr(a, "+-3^+b+-f").ok_or(Errors::ParseIntErr)?;
     a ^= tkk().1;
 
     if 0 > a {
@@ -54,9 +52,7 @@ pub fn generate_token<S: AsRef<str>>(text: S) -> Result<String, TranslationError
     Ok(format!(
         "{}.{}",
         a,
-        a ^ b
-            .parse::<i64>()
-            .map_err(|_| TranslationErrors::ParseIntErr)?
+        a ^ b.parse::<i64>().map_err(|_| Errors::ParseIntErr)?
     ))
 }
 
@@ -120,16 +116,4 @@ fn unsigned_right_shift(mut a: i64, mut b: i64) -> i64 {
     }
 
     a
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_generate_token() {
-        let text = "hello world";
-        let token = generate_token(text).unwrap();
-        println!("{}", token);
-    }
 }

@@ -2,6 +2,7 @@ use std::ops::Add;
 
 use crate::language::Langs;
 
+/// Encapsulates a translated text and its source and target languages.
 #[derive(Debug, Clone, PartialEq)]
 pub struct Translation {
     pub(crate) text: String,

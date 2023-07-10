@@ -40,6 +40,7 @@ enum Client {
     Async(reqwest::Client),
 }
 
+/// Translator instance
 pub struct Translator {
     client: Client,
 }
@@ -103,6 +104,7 @@ impl Translator {
     }
 
     /// Translate a text from a source language to a target language.
+    /// sync version available with feature "blocking"
     /// # Arguments
     /// * `text` - The text to translate.
     /// * `src` - The source language. Optional Value, Defaults to 'Auto'.

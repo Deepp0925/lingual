@@ -3,11 +3,11 @@ pub use language::{Lang, OptionLangExt};
 pub use translation::Translation;
 
 mod errors;
-mod language;
-
 mod token;
 mod translation;
 mod url;
+
+pub mod language;
 
 #[cfg(feature = "blocking")]
 pub mod blocking;

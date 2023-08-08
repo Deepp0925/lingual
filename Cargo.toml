@@ -35,8 +35,6 @@ blocking = ["reqwest/blocking", "json"]
 wasm = ["gloo-net", "json"]
 
 
-
-
 [[test]]
 name = "tests_async"
 path = "tests/mod.rs"

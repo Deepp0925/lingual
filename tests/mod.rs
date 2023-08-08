@@ -1,21 +1,17 @@
 use lingual::*;
 
+#[cfg(feature = "non-blocking")]
 #[tokio::test]
 async fn test_translate() {
-    let translator = Translator::new();
-    let translation = translator
-        .translate("Hello World", None, Some(Langs::Es))
+    let translation = non_blocking::translate("Hello World", None, Some(Lang::Es))
         .await
         .unwrap();
     assert_eq!("Hola Mundo", translation.text());
 }
 
-#[test]
 #[cfg(feature = "blocking")]
+#[test]
 fn test_translate_blocking() {
-    let translator = Translator::new();
-    let translation = translator
-        .translate("Hello World", None, Some(Langs::Es))
-        .unwrap();
+    let translation = blocking::translate("Hello World", None, Some(Lang::Es)).unwrap();
     assert_eq!("Hola Mundo", translation.text());
 }

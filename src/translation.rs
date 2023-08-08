@@ -1,14 +1,14 @@
 use std::ops::Add;
 
-use crate::language::Langs;
+use crate::language::Lang;
 
 /// Encapsulates a translated text and its source and target languages.
 #[derive(Debug, Clone, PartialEq)]
 pub struct Translation {
     pub(crate) text: String,
     pub(crate) src: String,
-    pub(crate) src_lang: Langs,
-    pub(crate) target_lang: Langs,
+    pub(crate) src_lang: Lang,
+    pub(crate) target_lang: Lang,
 }
 
 impl Translation {
@@ -23,12 +23,12 @@ impl Translation {
     }
 
     /// Get the source language.
-    pub fn src_lang(&self) -> Langs {
+    pub fn src_lang(&self) -> Lang {
         self.src_lang
     }
 
     /// Get the target language.
-    pub fn target_lang(&self) -> Langs {
+    pub fn target_lang(&self) -> Lang {
         self.target_lang
     }
 }

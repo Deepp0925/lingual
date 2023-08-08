@@ -4,7 +4,7 @@ pub enum Errors {
     /// caused by an parsing error of an integer.
     ParseIntErr,
     /// An error occurred while sending the request to the server.
-    HttpErr(reqwest::Error),
+    HttpErr(String),
     /// An error occurred while parsing the url.
     UrlParseErr,
     /// An error occurred while parsing the json.

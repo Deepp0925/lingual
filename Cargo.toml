@@ -1,6 +1,6 @@
 [package]
 name = "lingual"
-version = "1.0.3"
+version = "1.0.4"
 edition = "2021"
 description = "Free and Unlimited Language Translation (Google) API for Rust. Supports Async and Sync."
 authors = ["Deep Patel <deepp0925>"]
@@ -19,7 +19,7 @@ doctest = false
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-phf = {version="0.11.2", features=["macros"]}
+strum={version = "*", features = ["derive"]}
 reqwest = { version = "0.11.18", default-features = false, features = ["json"], optional = true }
 gloo-net = {version = "0.3.1", default-features = false, features = ["json", "http"], optional = true}
 serde_json = {version = "1.0.100", optional = true}

@@ -138,12 +138,14 @@
 //     }
 // }
 
+use strum::{EnumCount, EnumIter};
+
 /// The language codes supported by the API.
 /// It is also possible to use strings like "en" or "fr" instead of the enum variants but it is not recommended
 /// because it is not checked at compile time, therefore it is eliminated by default features.
 /// To enable this feature, add `strings` to the features list of the crate.
 /// get how many variants are there in the enum at compile time.
-#[derive(Debug, PartialEq, Clone, Copy, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, PartialEq, Clone, Copy, Eq, PartialOrd, Ord, Hash, EnumCount, EnumIter)]
 pub enum Lang {
     Auto,
     Af,
@@ -289,8 +291,8 @@ pub trait OptionLangExt {
 }
 
 impl Lang {
-    pub fn len() -> usize {
-        Lang::Zu as usize + 1
+    pub const fn len() -> usize {
+        Lang::COUNT
     }
 }
 

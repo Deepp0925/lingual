@@ -19,7 +19,7 @@ doctest = false
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-strum={version = "*", features = ["derive"]}
+strum={version = "0.25.0", features = ["derive"]}
 reqwest = { version = "0.11.18", default-features = false, features = ["json"], optional = true }
 gloo-net = {version = "0.3.1", default-features = false, features = ["json", "http"], optional = true}
 serde_json = {version = "1.0.100", optional = true}

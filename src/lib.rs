@@ -1,5 +1,5 @@
 pub use errors::Errors;
-pub use language::Lang;
+pub use language::{Lang, OptionLangExt};
 pub use translation::Translation;
 
 mod errors;

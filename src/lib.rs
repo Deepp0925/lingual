@@ -8,6 +8,7 @@ mod translation;
 mod url;
 
 pub mod language;
+pub use strum::IntoEnumIterator;
 
 #[cfg(feature = "blocking")]
 pub mod blocking;

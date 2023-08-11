@@ -6,8 +6,9 @@ pub(crate) fn generate_token<S: AsRef<str>>(text: S) -> Result<String, Errors> {
     let b = tkk().0;
 
     let mut d = vec![];
-
-    for mut f in 0..text.as_ref().len() {
+    let actual_text_len = text.as_ref().encode_utf16().count();
+    
+    for mut f in 0..actual_text_len {
         let a: Vec<u16> = text.as_ref().encode_utf16().collect();
         let mut g = a[f] as i64;
 
@@ -18,7 +19,7 @@ pub(crate) fn generate_token<S: AsRef<str>>(text: S) -> Result<String, Errors> {
                 d.push(g >> 6 | 192);
             } else {
                 if (55296 == (g & 64512))
-                    && (f + 1 < text.as_ref().len())
+                    && (f + 1 < actual_text_len)
                     && (56320 == (a[f + 1] & 64512))
                 {
                     f += 1;

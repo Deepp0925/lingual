@@ -11,7 +11,6 @@ documentation = "https://docs.rs/lingual"
 license = "MIT"
 keywords = ["Locale", "Localization", "i18n", "Internationalization", "Translation"]
 categories = [ "localization", "internationalization"]
-default-features = false
 
 [lib]
 doctest = false
@@ -36,14 +35,8 @@ wasm = ["gloo-net", "json"]
 
 
 [[test]]
-name = "tests_async"
+name = "all_tests"
 path = "tests/mod.rs"
-default-features = false
-required-features = []
-
-[[test]]
-name = "tests_blocking"
-path = "tests/mod.rs"
-default-features = false
 required-features = ["blocking"]
+
 

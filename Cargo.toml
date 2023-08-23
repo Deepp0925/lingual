@@ -20,18 +20,19 @@ doctest = false
 [dependencies]
 strum={version = "0.25.0", features = ["derive"]}
 reqwest = { version = "0.11.18", default-features = false, features = ["json"], optional = true }
-gloo-net = {version = "0.3.1", default-features = false, features = ["json", "http"], optional = true}
-serde_json = {version = "1.0.100", optional = true}
+gloo-net = {version = "0.4.0", default-features = false, features = ["json", "http"], optional = true}
+serde_json = "1.0.100"
+serde = {version = "1.0.185", features = ["derive"]}
 
 [dev-dependencies]
 tokio = {version = "1.29.1", features = ["rt", "macros"]}
 
 [features]
 default = ["non-blocking"]
-json = ["serde_json"]
-non-blocking = ["reqwest", "json"]
-blocking = ["reqwest/blocking", "json"]
-wasm = ["gloo-net", "json"]
+accurate = []
+non-blocking = ["reqwest"]
+blocking = ["reqwest/blocking" ]
+wasm = ["gloo-net"]
 
 
 [[test]]

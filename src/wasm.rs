@@ -1,4 +1,4 @@
-use crate::{language::OptionLangExt, url::generate_url, Errors, Lang, Translation};
+use crate::{langs::OptionLangExt, url::generate_url, Errors, Lang, Translation};
 use gloo_net::http::Request;
 
 /// Translate a text from a source language to a target language.

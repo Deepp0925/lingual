@@ -1,6 +1,6 @@
 use std::ops::Add;
 
-use crate::language::Lang;
+use crate::langs::Lang;
 
 /// Encapsulates a translated text and its source and target languages.
 #[derive(Debug, Clone, PartialEq)]

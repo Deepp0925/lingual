@@ -11,9 +11,9 @@ pub fn generate_url<S: AsRef<str>>(text: S, src: Lang, target: Lang) -> Result<S
         "{}{}?client=t&sl={}&tl={}&hl={}&dt=t&ie=UTF-8&oe=UTF-8&otf=1&ssel=0&tsel=0&kc=7&tk={}&q={}",
         BASE_URL,
         SINGLE_TRANSLATE_URL,
-        src.to_string(),
-        target.to_string(),
-        target.to_string(),
+        src,
+        target,
+        target,
         token,
         text.as_ref()
     ))

@@ -1,4 +1,31 @@
 use lingual::*;
+use std::str::FromStr;
+
+#[test]
+fn test_lang_enums() {
+    assert_eq!(Lang::En.to_string(), "en");
+    assert_eq!(Lang::Es.to_string(), "es");
+    assert_eq!(Lang::ZhCn.to_string(), "zh-cn");
+    assert_eq!(Lang::ZhTw.to_string(), "zh-tw");
+
+    assert_eq!(Lang::from_str("en"), Ok(Lang::En));
+    assert_eq!(Lang::from_str("es"), Ok(Lang::Es));
+    assert_eq!(Lang::from_str("zh-cn"), Ok(Lang::ZhCn));
+    assert_eq!(Lang::from_str("zh-tw"), Ok(Lang::ZhTw));
+    assert_eq!(
+        Lang::from_str("mni-mtei"),
+        Err(strum::ParseError::VariantNotFound)
+    );
+}
+
+#[cfg(feature = "sea-orm")]
+#[test]
+fn test_sea_orm() {
+    use sea_orm::entity::prelude::*;
+    println!("testing sea-orm");
+    println!("{:?}", Lang::name());
+    println!("{:?}", Lang::db_type());
+}
 
 const HELLO_WORLD_STR: &str = "Hello World";
 const EXPECTED_HELLO_WORLD_STR: &str = "Hola Mundo";

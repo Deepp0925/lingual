@@ -2,18 +2,17 @@ name: Rust
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 # env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Run tests
-      run: cargo t --test all_tests --features="blocking"
+      - uses: actions/checkout@v3
+      - name: Run tests
+        run: cargo t --test all_tests --all-features

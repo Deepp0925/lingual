@@ -1,5 +1,5 @@
 #![allow(dead_code)]
-use strum::{EnumCount, EnumIter};
+use strum::{EnumCount, EnumIter, EnumString};
 /// The language codes supported by the API.
 /// It is also possible to use strings like "en" or "fr" instead of the enum variants but it is not recommended
 /// because it is not checked at compile time, therefore it is eliminated by default features.
@@ -30,9 +30,12 @@ use strum::{EnumCount, EnumIter};
     Hash,
     EnumCount,
     EnumIter,
+    EnumString,
+    strum::Display,
     serde::Serialize,
     serde::Deserialize,
 )]
+#[strum(serialize_all = "kebab-case")]
 pub enum Lang {
     Auto,
     En,
@@ -49,21 +52,10 @@ pub enum Lang {
     Ko,
 }
 
-impl ToString for Lang {
-    fn to_string(&self) -> String {
-        if self == &Self::ZhCn {
-            return "zh-cn".to_string();
-        } else if self == &Self::ZhTw {
-            return "zh-tw".to_string();
-        }
-        format!("{:?}", self).to_lowercase()
-    }
-}
-
 impl Lang {
     /// this is used to map the lang varient to the string(full) representation of the language
     /// for example: `Lang::En` => "English", `Lang::Fr` => "French", `Lang::Auto` => "Auto"
-    pub fn name(&self) -> &str {
+    pub fn fullname(&self) -> &str {
         match self {
             Lang::Auto => "Auto",
             Lang::En => "English",

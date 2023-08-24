@@ -30,3 +30,20 @@ let translation = translator
     .unwrap();
 assert_eq!("Hola Mundo", translation.text());
 ```
+
+## Features
+
+- `wasm` - allows the crate to be used in wasm environment - only supports async/await syntax.
+- `sea-orm` - support for conversion between db types and rust types from sea-orm.
+- `blocking` - uses blocking api (non async/await syntax) for fetching the translations.
+- `non-blocking` - default - use async/await syntax
+- `accurate` - limits the number langs supported to the ones with higher level accuracy
+
+## Roadmap
+
+- [x] Support for async/await syntax
+- [x] Support for blocking api
+- [x] Support for wasm
+- [] Support for DeepL api (Will be worked on later)
+  - [] blocking
+  - [] async/await

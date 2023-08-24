@@ -31,6 +31,12 @@ impl Lang {
     }
 }
 
+impl Default for Lang {
+    fn default() -> Self {
+        Lang::Auto
+    }
+}
+
 impl OptionLangExt for Option<Lang> {
     /// returns the language if it is set, otherwise returns default src: `Lang::Auto`
     fn unwrap_or_default_src(&self) -> Lang {
@@ -47,74 +53,3 @@ impl OptionLangExt for Option<Lang> {
         }
     }
 }
-
-#[cfg(feature = "sea-orm")]
-use sea_orm::{
-    entity::prelude::*,
-    sea_query::{Alias, ArrayType, ValueType, ValueTypeErr},
-    TryGetableFromJson,
-};
-#[cfg(feature = "sea-orm")]
-use std::str::FromStr;
-#[cfg(feature = "sea-orm")]
-impl ActiveEnum for Lang {
-    // The macro attribute `rs_type` is being pasted here
-    type Value = String;
-
-    type ValueVec = Vec<Self::Value>;
-
-    // By default, the name of Rust enum in camel case if `enum_name` was not provided explicitly
-    fn name() -> DynIden {
-        SeaRc::new(Alias::new("Lang"))
-    }
-
-    // Map Rust enum variants to corresponding `num_value` or `string_value`
-    fn to_value(&self) -> Self::Value {
-        self.to_string()
-    }
-
-    // Map `num_value` or `string_value` to corresponding Rust enum variants
-    fn try_from_value(v: &Self::Value) -> Result<Self, DbErr> {
-        Self::from_str(v).map_err(|_| DbErr::Type(format!("Invalid Lang: {}", v)))
-    }
-
-    // The macro attribute `db_type` is being pasted here
-    fn db_type() -> ColumnDef {
-        Self::column_type().def()
-    }
-}
-#[cfg(feature = "sea-orm")]
-impl From<Lang> for Value {
-    fn from(l: Lang) -> Self {
-        Value::String(Some(Box::new(l.to_string())))
-    }
-}
-#[cfg(feature = "sea-orm")]
-impl ValueType for Lang {
-    fn try_from(v: Value) -> Result<Self, ValueTypeErr> {
-        match v {
-            Value::String(Some(s)) => Ok(Lang::from_str(&s).map_err(|_| ValueTypeErr)?),
-            _ => Err(ValueTypeErr),
-        }
-    }
-
-    fn type_name() -> String {
-        "Lang".to_owned()
-    }
-
-    fn array_type() -> ArrayType {
-        ArrayType::String
-    }
-
-    fn column_type() -> ColumnType {
-        let variants: Vec<DynIden> = Lang::iter()
-            .map(|l| SeaRc::new(Alias::new(l.to_string())))
-            .collect();
-        ColumnType::Enum {
-            name: Self::name(),
-            variants,
-        }
-    }
-}
-#[cfg(feature = "sea-orm")]
-impl TryGetableFromJson for Lang {}

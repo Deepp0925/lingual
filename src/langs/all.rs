@@ -21,6 +21,7 @@ use strum::{EnumCount, EnumIter, EnumString};
     serde::Serialize,
     serde::Deserialize,
 )]
+#[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
 #[strum(serialize_all = "kebab-case")]
 pub enum Lang {
     Auto,

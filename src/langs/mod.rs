@@ -49,7 +49,11 @@ impl OptionLangExt for Option<Lang> {
 }
 
 #[cfg(feature = "sea-orm")]
-use sea_orm::{entity::prelude::*, sea_query::Alias};
+use sea_orm::{
+    entity::prelude::*,
+    sea_query::{Alias, ArrayType, ValueType, ValueTypeErr},
+    TryGetableFromJson,
+};
 #[cfg(feature = "sea-orm")]
 use std::str::FromStr;
 #[cfg(feature = "sea-orm")]
@@ -76,6 +80,33 @@ impl ActiveEnum for Lang {
 
     // The macro attribute `db_type` is being pasted here
     fn db_type() -> ColumnDef {
+        Self::column_type().def()
+    }
+}
+#[cfg(feature = "sea-orm")]
+impl From<Lang> for Value {
+    fn from(l: Lang) -> Self {
+        Value::String(Some(Box::new(l.to_string())))
+    }
+}
+#[cfg(feature = "sea-orm")]
+impl ValueType for Lang {
+    fn try_from(v: Value) -> Result<Self, ValueTypeErr> {
+        match v {
+            Value::String(Some(s)) => Ok(Lang::from_str(&s).map_err(|_| ValueTypeErr)?),
+            _ => Err(ValueTypeErr),
+        }
+    }
+
+    fn type_name() -> String {
+        "Lang".to_owned()
+    }
+
+    fn array_type() -> ArrayType {
+        ArrayType::String
+    }
+
+    fn column_type() -> ColumnType {
         let variants: Vec<DynIden> = Lang::iter()
             .map(|l| SeaRc::new(Alias::new(l.to_string())))
             .collect();
@@ -83,6 +114,7 @@ impl ActiveEnum for Lang {
             name: Self::name(),
             variants,
         }
-        .def()
     }
 }
+#[cfg(feature = "sea-orm")]
+impl TryGetableFromJson for Lang {}

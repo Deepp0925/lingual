@@ -25,6 +25,29 @@ fn test_sea_orm() {
     println!("testing sea-orm");
     println!("{:?}", Lang::name());
     println!("{:?}", Lang::db_type());
+
+    use sea_orm::entity::prelude::*;
+    #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel)]
+    #[sea_orm(table_name = "translations")]
+    pub struct Model {
+        /// THe primary key
+        #[sea_orm(primary_key)]
+        pub id: i32,
+        /// the source language
+        pub lang: Lang,
+        /// this is the key used to identify the translation
+        /// this has to be unique, but it is not a primary key
+        /// because the primary key is the id
+        #[sea_orm(unique)]
+        pub key: String,
+        /// this is the source text
+        pub text: String,
+    }
+
+    #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
+    pub enum Relation {}
+
+    impl ActiveModelBehavior for ActiveModel {}
 }
 
 const HELLO_WORLD_STR: &str = "Hello World";

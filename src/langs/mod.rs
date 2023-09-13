@@ -31,6 +31,7 @@ impl Lang {
     }
 }
 
+/// Ignore this as the Lang enum can come from two different modules
 impl Default for Lang {
     fn default() -> Self {
         Lang::Auto

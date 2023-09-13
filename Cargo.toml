@@ -23,11 +23,11 @@ reqwest = { version = "0.11.18", default-features = false, features = ["json"], 
 gloo-net = {version = "0.4.0", default-features = false, features = ["json", "http"], optional = true}
 serde_json = "1.0.100"
 serde = {version = "1.0.185", features = ["derive"]}
-sqlx = {version = "0.6", features = ["sqlite", "runtime-tokio-rustls"], optional=true}
+sqlx = {version = "0.7", features = ["sqlite", "runtime-tokio-rustls"], optional=true}
 
 [dev-dependencies]
 tokio = {version = "1.29.1", features = ["rt", "macros"]}
-welds = {version = "0.1.8", features = ["sqlite"]}
+welds = {version = "0.2", features = ["sqlite"]}
 
 [features]
 default = ["non-blocking"]

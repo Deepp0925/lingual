@@ -5,7 +5,7 @@ mod translation;
 mod url;
 
 pub use errors::Errors;
-pub use langs::{Lang, OptionLangExt};
+pub use langs::*;
 pub use translation::Translation;
 
 #[cfg(feature = "blocking")]

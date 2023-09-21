@@ -4,7 +4,6 @@ use strum::{EnumCount, EnumIter, EnumString};
 /// because it is not checked at compile time, therefore it is eliminated by default features.
 /// To enable this feature, add `strings` to the features list of the crate.
 /// get how many variants are there in the enum at compile time.
-#[cfg(not(feature = "accurate"))]
 #[derive(
     Debug,
     PartialEq,
@@ -14,6 +13,7 @@ use strum::{EnumCount, EnumIter, EnumString};
     PartialOrd,
     Ord,
     Hash,
+    Default,
     EnumCount,
     EnumIter,
     EnumString,
@@ -24,6 +24,7 @@ use strum::{EnumCount, EnumIter, EnumString};
 #[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
 #[strum(serialize_all = "kebab-case")]
 pub enum Lang {
+    #[default]
     Auto,
     Af,
     Sq,
@@ -164,7 +165,7 @@ impl Lang {
     /// this is used to map the lang varient to the string(full) representation of the language
     /// for example: `Lang::En` => "English", `Lang::Fr` => "French", `Lang::Auto` => "Auto"
     pub fn fullname(&self) -> &str {
-        match self {
+        match &self {
             Lang::Auto => "Auto",
             Lang::Af => "Afrikaans",
             Lang::Sq => "Albanian",

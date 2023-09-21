@@ -31,7 +31,6 @@ welds = {version = "0.2", features = ["sqlite"]}
 
 [features]
 default = ["non-blocking"]
-accurate = []
 sqlx = ["dep:sqlx"]
 non-blocking = ["reqwest"]
 blocking = ["reqwest/blocking" ]

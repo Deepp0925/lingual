@@ -1,13 +1,9 @@
 use strum::{EnumCount, IntoEnumIterator};
 
-#[cfg(feature = "accurate")]
 mod accurate;
-#[cfg(feature = "accurate")]
-pub use accurate::Lang;
+pub use accurate::AccurateLang;
 
-#[cfg(not(feature = "accurate"))]
 mod all;
-#[cfg(not(feature = "accurate"))]
 pub use all::Lang;
 
 pub trait OptionLangExt {
@@ -26,15 +22,13 @@ impl Lang {
         Lang::iter()
     }
 
-    pub fn can_be_target_lang(&self) -> bool {
-        !matches!(self, Lang::Auto)
+    pub fn accurate_iter_() -> impl Iterator<Item = AccurateLang> {
+        AccurateLang::iter()
     }
-}
 
-/// Ignore this as the Lang enum can come from two different modules
-impl Default for Lang {
-    fn default() -> Self {
-        Lang::Auto
+    ///checks if the provided lang can be converted to an accurate lang
+    pub fn is_accurate_lang(&self) -> bool {
+        AccurateLang::is_accurate_lang(self)
     }
 }
 

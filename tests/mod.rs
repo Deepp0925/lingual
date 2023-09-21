@@ -2,6 +2,22 @@ use lingual::*;
 use std::str::FromStr;
 
 #[test]
+fn is_accurate_lang_test() {
+    assert!(Lang::Auto.is_accurate_lang());
+    assert!(Lang::En.is_accurate_lang());
+    assert!(Lang::Fr.is_accurate_lang());
+    assert!(Lang::De.is_accurate_lang());
+    assert!(Lang::Es.is_accurate_lang());
+    assert!(Lang::It.is_accurate_lang());
+    assert!(Lang::Pt.is_accurate_lang());
+    assert!(Lang::Ru.is_accurate_lang());
+    assert!(Lang::ZhCn.is_accurate_lang());
+    assert!(Lang::Ja.is_accurate_lang());
+    assert!(Lang::Ko.is_accurate_lang());
+    assert!(!Lang::ZhTw.is_accurate_lang());
+}
+
+#[test]
 fn test_lang_enums() {
     assert_eq!(Lang::En.to_string(), "en");
     assert_eq!(Lang::Es.to_string(), "es");
@@ -12,10 +28,7 @@ fn test_lang_enums() {
     assert_eq!(Lang::from_str("es"), Ok(Lang::Es));
     assert_eq!(Lang::from_str("zh-cn"), Ok(Lang::ZhCn));
     assert_eq!(Lang::from_str("zh-tw"), Ok(Lang::ZhTw));
-    assert_eq!(
-        Lang::from_str("mni-mtei"),
-        Err(strum::ParseError::VariantNotFound)
-    );
+    assert_eq!(Lang::from_str("mni-mtei"), Ok(Lang::MniMtei));
 }
 
 #[cfg(feature = "sqlx")]

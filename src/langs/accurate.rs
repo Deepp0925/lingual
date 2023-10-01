@@ -55,6 +55,10 @@ pub enum AccurateLang {
 }
 
 impl AccurateLang {
+    pub const fn len() -> usize {
+        AccurateLang::COUNT
+    }
+
     /// this is used to map the lang varient to the string(full) representation of the language
     /// for example: `Lang::En` => "English", `Lang::Fr` => "French", `Lang::Auto` => "Auto"
     pub fn fullname(&self) -> &str {

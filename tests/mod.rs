@@ -81,7 +81,6 @@ async fn test_translate() {
 #[cfg(feature = "blocking")]
 #[test]
 fn test_translate_blocking() {
-    println!("testing blockng");
     let translation = blocking::translate(HELLO_WORLD_STR, None, Some(Lang::Es)).unwrap();
     assert_eq!(EXPECTED_HELLO_WORLD_STR, translation.text());
 

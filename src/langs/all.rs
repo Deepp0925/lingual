@@ -1,4 +1,6 @@
-use strum::{EnumCount, EnumIter, EnumString};
+use strum::{EnumCount, EnumIter, EnumString, IntoEnumIterator};
+
+use crate::AccurateLang;
 /// The language codes supported by the API.
 /// It is also possible to use strings like "en" or "fr" instead of the enum variants but it is not recommended
 /// because it is not checked at compile time, therefore it is eliminated by default features.
@@ -162,6 +164,22 @@ pub enum Lang {
 }
 
 impl Lang {
+    pub const fn len() -> usize {
+        Lang::COUNT
+    }
+
+    pub fn iter_() -> impl Iterator<Item = Self> {
+        Lang::iter()
+    }
+
+    pub fn accurate_iter_() -> impl Iterator<Item = AccurateLang> {
+        AccurateLang::iter()
+    }
+
+    ///checks if the provided lang can be converted to an accurate lang
+    pub fn is_accurate_lang(&self) -> bool {
+        AccurateLang::is_accurate_lang(self)
+    }
     /// this is used to map the lang varient to the string(full) representation of the language
     /// for example: `Lang::En` => "English", `Lang::Fr` => "French", `Lang::Auto` => "Auto"
     pub fn fullname(&self) -> &str {
@@ -299,6 +317,30 @@ impl Lang {
             Lang::Yi => "Yiddish",
             Lang::Yo => "Yoruba",
             Lang::Zu => "Zulu",
+        }
+    }
+}
+
+pub trait OptionLangExt {
+    /// returns the language if it is set, otherwise returns default src: `Lang::Auto`
+    fn unwrap_or_default_src(&self) -> Lang;
+    /// returns the language if it is set, otherwise returns default target: `Lang::En`
+    fn unwrap_or_default_trgt(&self) -> Lang;
+}
+
+impl OptionLangExt for Option<Lang> {
+    /// returns the language if it is set, otherwise returns default src: `Lang::Auto`
+    fn unwrap_or_default_src(&self) -> Lang {
+        match self {
+            None => Lang::Auto,
+            Some(l) => *l,
+        }
+    }
+    /// returns the language if it is set, otherwise returns default target: `Lang::En`
+    fn unwrap_or_default_trgt(&self) -> Lang {
+        match self {
+            None => Lang::En,
+            Some(l) => *l,
         }
     }
 }

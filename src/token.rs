@@ -7,7 +7,7 @@ pub(crate) fn generate_token<S: AsRef<str>>(text: S) -> Result<String, Errors> {
 
     let mut d = vec![];
     let actual_text_len = text.as_ref().encode_utf16().count();
-    
+
     for mut f in 0..actual_text_len {
         let a: Vec<u16> = text.as_ref().encode_utf16().collect();
         let mut g = a[f] as i64;

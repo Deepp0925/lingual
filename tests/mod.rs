@@ -91,3 +91,26 @@ fn test_translate_blocking() {
         translation.text().to_lowercase()
     );
 }
+
+#[cfg(feature = "non-blocking")]
+#[tokio::test]
+async fn test_others() {
+    let egs = [
+        "Kitty set - velvet#0888  ",
+        "マテリアルカラーの変更はInspectorのMaterialsの所へ好きなカラーのマテリアルをドラッグ&ドロップして",
+        "薄荷 VRChat向けアバター #Hakka3D",
+        "💗概要",
+        "本作品はモデリング&他",
+        "FBX/textures package + Unity package",
+        "🌱こちらのワールドで試着できます",
+        "水瀬 VRChat向けアバター #Minase3D",
+        "【NO.37 moon&sun】ver1.00",
+        "Shoes- Bobster#8539 ",
+        "・ウィンドウ下部のBuild & Publish for Windowsボタンを押す"
+    ];
+
+    for eg in egs.iter() {
+        let translation = non_blocking::translate(eg.trim(), Some(Lang::Ja), Some(Lang::En)).await;
+        println!("{} -> {:#?}", eg, translation);
+    }
+}

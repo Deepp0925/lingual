@@ -18,15 +18,18 @@ pub async fn translate<S: AsRef<str>>(
     let target = target.unwrap_or_default_trgt();
     let url = generate_url(text.as_ref(), src, target)?;
 
-    let req = Request::get(&url)
+    let req = Request::get(url.as_str())
         .send()
         .await
         .map_err(|e| Errors::HttpErr(e.to_string()))?;
     let translated = &req
         .json::<serde_json::Value>()
         .await
-        .map_err(|_| Errors::JsonParseErr)?[0][0][0];
-    let translated = translated.as_str().ok_or(Errors::JsonParseErr)?.to_string();
+        .map_err(|err| Errors::JsonParseErr(err.to_string()))?[0][0][0];
+    let translated = translated
+        .as_str()
+        .ok_or(Errors::JsonParseErr("Error Parsing String".to_owned()))?
+        .to_string();
 
     Ok(Translation {
         text: translated,

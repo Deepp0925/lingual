@@ -9,5 +9,5 @@ pub enum Errors {
     UrlParseErr,
     /// An error occurred while parsing the json.
     /// This error is normally caused by an invalid json.
-    JsonParseErr,
+    JsonParseErr(String),
 }

@@ -15,4 +15,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Run tests
-        run: cargo t --test async_test && cargo t --test sync_test --features=blocking
+        run: cargo t --tests && cargo t --tests --features=blocking

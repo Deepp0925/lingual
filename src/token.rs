@@ -1,6 +1,6 @@
 use std::borrow::Cow;
 
-use crate::errors::Errors;
+use errors::Errors;
 
 pub(crate) fn generate_token<S: AsRef<str>>(text: S) -> Result<String, Errors> {
     let b = tkk().0;

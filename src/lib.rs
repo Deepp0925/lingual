@@ -1,4 +1,3 @@
-mod errors;
 mod langs;
 mod token;
 mod translation;

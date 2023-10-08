@@ -45,7 +45,7 @@ async fn test_translate() {
     let translation = translate(HELLO_WORLD_STR, Lang::Auto, Lang::Es)
         .await
         .unwrap();
-    assert_eq!(EXPECTED_HELLO_WORLD_STR, translation.text());
+    assert_eq!(EXPECTED_HELLO_WORLD_STR, translation.text);
 
     let translation = translate(SPECIAL_CHAR_STR, Lang::Es, Lang::En)
         .await
@@ -53,7 +53,7 @@ async fn test_translate() {
 
     assert_eq!(
         EXPECTED_SPECIAL_CHAR_STR.to_lowercase(),
-        translation.text().to_lowercase()
+        translation.text.to_lowercase()
     );
 
     let egs = [
@@ -75,7 +75,7 @@ async fn test_translate() {
         let translation = translate(eg.trim(), Lang::Ja, Lang::En).await;
         match translation {
             Ok(translation) => {
-                println!("{} -> {}", eg, translation.text());
+                println!("{} -> {}", eg, translation.text);
             }
             Err(err) => {
                 println!("{} -> {:#?}", eg, err);
@@ -91,13 +91,13 @@ async fn test_translate() {
 #[test]
 fn test_translate_blocking() {
     let translation = translate(HELLO_WORLD_STR, Lang::Auto, Lang::Es).unwrap();
-    assert_eq!(EXPECTED_HELLO_WORLD_STR, translation.text());
+    assert_eq!(EXPECTED_HELLO_WORLD_STR, translation.text);
 
     let translation = translate(SPECIAL_CHAR_STR, Lang::Es, Lang::En).unwrap();
 
     assert_eq!(
         EXPECTED_SPECIAL_CHAR_STR.to_lowercase(),
-        translation.text().to_lowercase()
+        translation.text.to_lowercase()
     );
 
     let egs = [
@@ -119,7 +119,7 @@ fn test_translate_blocking() {
         let translation = translate(eg.trim(), Lang::Ja, Lang::En);
         match translation {
             Ok(translation) => {
-                println!("{} -> {}", eg, translation.text());
+                println!("{} -> {}", eg, translation.text);
             }
             Err(err) => {
                 println!("{} -> {:#?}", eg, err);

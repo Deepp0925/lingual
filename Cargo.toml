@@ -19,26 +19,23 @@ doctest = false
 
 [dependencies]
 strum={version = "0.25.0", features = ["derive"]}
-reqwest = { version = "0.11.18", default-features = false, features = ["json"], optional = true }
-gloo-net = {version = "0.4.0", default-features = false, features = ["json", "http"], optional = true}
+reqwest = { version = "0.11.18", default-features = false, features = ["json"] }
 serde_json = "1.0.100"
 serde = {version = "1.0.185", features = ["derive"]}
-sqlx = {version = "0.7", features = ["sqlite", "runtime-tokio-rustls"], optional=true}
+once_cell = "1.18.0"
+regex = "1.9.6"
 
 [dev-dependencies]
 tokio = {version = "1.29.1", features = ["rt", "macros"]}
-welds = {version = "0.2", features = ["sqlite"]}
 
 [features]
-default = ["non-blocking"]
-sqlx = ["dep:sqlx"]
-non-blocking = ["reqwest"]
-blocking = ["reqwest/blocking" ]
-wasm = ["gloo-net"]
+blocking = ["reqwest/blocking"]
 
 
 [[test]]
-name = "all_tests"
+name = "tests"
 path = "tests/mod.rs"
+
+
 
 

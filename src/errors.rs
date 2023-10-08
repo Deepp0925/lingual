@@ -1,3 +1,5 @@
+pub type TranslationResult<T> = Result<T, Errors>;
+
 #[derive(Debug)]
 pub enum Errors {
     /// An error occurred while generating the token which is normally

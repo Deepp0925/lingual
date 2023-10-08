@@ -1,5 +1,3 @@
-use std::ops::Add;
-
 use crate::langs::Lang;
 
 /// Encapsulates a translated text and its source and target languages.
@@ -36,13 +34,5 @@ impl Translation {
 impl AsRef<str> for Translation {
     fn as_ref(&self) -> &str {
         &self.text
-    }
-}
-
-impl Add for Translation {
-    type Output = String;
-
-    fn add(self, rhs: Self) -> Self::Output {
-        self.text + &rhs.text
     }
 }

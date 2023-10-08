@@ -31,27 +31,6 @@ fn test_lang_enums() {
     assert_eq!(Lang::from_str("mni-mtei"), Ok(Lang::MniMtei));
 }
 
-#[cfg(feature = "sqlx")]
-#[test]
-fn test_welds_sqlite() {
-    #[derive(Clone, Debug, PartialEq, Eq, sqlx::FromRow, welds::WeldsModel)]
-    pub struct Model {
-        /// THe primary key
-        #[welds(primary_key)]
-        pub id: u32,
-        /// the source language
-        pub lang: Lang,
-        /// this is the key used to identify the translation
-        /// this has to be unique, but it is not a primary key
-        /// because the primary key is the id
-        pub key: String,
-        /// this is the source text
-        pub text: String,
-    }
-
-    Model::where_col(|model| model.lang.equal(Lang::En));
-}
-
 const HELLO_WORLD_STR: &str = "Hello World";
 const EXPECTED_HELLO_WORLD_STR: &str = "Hola Mundo";
 
@@ -60,15 +39,15 @@ const SPECIAL_CHAR_STR: &str =
 const EXPECTED_SPECIAL_CHAR_STR: &str =
     "Here I will try to answer if it is too late to learn to program and what profession you should study to be a world class engineer.";
 
-#[cfg(feature = "non-blocking")]
+#[cfg(not(feature = "blocking"))]
 #[tokio::test]
 async fn test_translate() {
-    let translation = non_blocking::translate(HELLO_WORLD_STR, None, Some(Lang::Es))
+    let translation = translate(HELLO_WORLD_STR, Lang::Auto, Lang::Es)
         .await
         .unwrap();
     assert_eq!(EXPECTED_HELLO_WORLD_STR, translation.text());
 
-    let translation = non_blocking::translate(SPECIAL_CHAR_STR, Some(Lang::Es), None)
+    let translation = translate(SPECIAL_CHAR_STR, Lang::Es, Lang::En)
         .await
         .unwrap();
 
@@ -76,25 +55,7 @@ async fn test_translate() {
         EXPECTED_SPECIAL_CHAR_STR.to_lowercase(),
         translation.text().to_lowercase()
     );
-}
 
-#[cfg(feature = "blocking")]
-#[test]
-fn test_translate_blocking() {
-    let translation = blocking::translate(HELLO_WORLD_STR, None, Some(Lang::Es)).unwrap();
-    assert_eq!(EXPECTED_HELLO_WORLD_STR, translation.text());
-
-    let translation = blocking::translate(SPECIAL_CHAR_STR, Some(Lang::Es), None).unwrap();
-
-    assert_eq!(
-        EXPECTED_SPECIAL_CHAR_STR.to_lowercase(),
-        translation.text().to_lowercase()
-    );
-}
-
-#[cfg(feature = "non-blocking")]
-#[tokio::test]
-async fn test_others() {
     let egs = [
         "Kitty set - velvet#0888  ",
         "マテリアルカラーの変更はInspectorのMaterialsの所へ好きなカラーのマテリアルをドラッグ&ドロップして",
@@ -109,8 +70,63 @@ async fn test_others() {
         "・ウィンドウ下部のBuild & Publish for Windowsボタンを押す"
     ];
 
+    let mut err_count = 0;
     for eg in egs.iter() {
-        let translation = non_blocking::translate(eg.trim(), Some(Lang::Ja), Some(Lang::En)).await;
-        println!("{} -> {:#?}", eg, translation);
+        let translation = translate(eg.trim(), Lang::Ja, Lang::En).await;
+        match translation {
+            Ok(translation) => {
+                println!("{} -> {}", eg, translation.text());
+            }
+            Err(err) => {
+                println!("{} -> {:#?}", eg, err);
+                err_count += 1;
+            }
+        }
     }
+
+    assert_eq!(err_count, 2);
+}
+
+#[cfg(feature = "blocking")]
+#[test]
+fn test_translate_blocking() {
+    let translation = translate(HELLO_WORLD_STR, Lang::Auto, Lang::Es).unwrap();
+    assert_eq!(EXPECTED_HELLO_WORLD_STR, translation.text());
+
+    let translation = translate(SPECIAL_CHAR_STR, Lang::Es, Lang::En).unwrap();
+
+    assert_eq!(
+        EXPECTED_SPECIAL_CHAR_STR.to_lowercase(),
+        translation.text().to_lowercase()
+    );
+
+    let egs = [
+        "Kitty set - velvet#0888  ",
+        "マテリアルカラーの変更はInspectorのMaterialsの所へ好きなカラーのマテリアルをドラッグ&ドロップして",
+        "薄荷 VRChat向けアバター #Hakka3D",
+        "💗概要",
+        "本作品はモデリング&他",
+        "FBX/textures package + Unity package",
+        "🌱こちらのワールドで試着できます",
+        "水瀬 VRChat向けアバター #Minase3D",
+        "【NO.37 moon&sun】ver1.00",
+        "Shoes- Bobster#8539 ",
+        "・ウィンドウ下部のBuild & Publish for Windowsボタンを押す"
+    ];
+
+    let mut err_count = 0;
+    for eg in egs.iter() {
+        let translation = translate(eg.trim(), Lang::Ja, Lang::En);
+        match translation {
+            Ok(translation) => {
+                println!("{} -> {}", eg, translation.text());
+            }
+            Err(err) => {
+                println!("{} -> {:#?}", eg, err);
+                err_count += 1;
+            }
+        }
+    }
+
+    assert_eq!(err_count, 2);
 }

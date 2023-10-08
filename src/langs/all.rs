@@ -321,26 +321,26 @@ impl Lang {
     }
 }
 
-pub trait OptionLangExt {
-    /// returns the language if it is set, otherwise returns default src: `Lang::Auto`
-    fn unwrap_or_default_src(&self) -> Lang;
-    /// returns the language if it is set, otherwise returns default target: `Lang::En`
-    fn unwrap_or_default_trgt(&self) -> Lang;
-}
+// pub trait OptionLangExt {
+//     /// returns the language if it is set, otherwise returns default src: `Lang::Auto`
+//     fn unwrap_or_default_src(&self) -> Lang;
+//     /// returns the language if it is set, otherwise returns default target: `Lang::En`
+//     fn unwrap_or_default_trgt(&self) -> Lang;
+// }
 
-impl OptionLangExt for Option<Lang> {
-    /// returns the language if it is set, otherwise returns default src: `Lang::Auto`
-    fn unwrap_or_default_src(&self) -> Lang {
-        match self {
-            None => Lang::Auto,
-            Some(l) => *l,
-        }
-    }
-    /// returns the language if it is set, otherwise returns default target: `Lang::En`
-    fn unwrap_or_default_trgt(&self) -> Lang {
-        match self {
-            None => Lang::En,
-            Some(l) => *l,
-        }
-    }
-}
+// impl OptionLangExt for Option<Lang> {
+//     /// returns the language if it is set, otherwise returns default src: `Lang::Auto`
+//     fn unwrap_or_default_src(&self) -> Lang {
+//         match self {
+//             None => Lang::Auto,
+//             Some(l) => *l,
+//         }
+//     }
+//     /// returns the language if it is set, otherwise returns default target: `Lang::En`
+//     fn unwrap_or_default_trgt(&self) -> Lang {
+//         match self {
+//             None => Lang::En,
+//             Some(l) => *l,
+//         }
+//     }
+// }

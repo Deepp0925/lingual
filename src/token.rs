@@ -2,6 +2,7 @@ use std::borrow::Cow;
 
 use errors::Errors;
 
+/// will generate a token for the text
 pub(crate) fn generate_token<S: AsRef<str>>(text: S) -> Result<String, Errors> {
     let b = tkk().0;
 

@@ -1,9 +1,9 @@
+mod errors;
 mod langs;
 mod token;
 mod translation;
 mod url;
-pub use errors::Errors;
-use errors::TranslationResult;
+use errors::{Errors, ErrorsResult};
 pub use langs::*;
 use once_cell::sync::Lazy;
 use serde_json::Value;
@@ -23,7 +23,7 @@ pub async fn translate<S: AsRef<str>>(
     text: S,
     src: Lang,
     target: Lang,
-) -> TranslationResult<Translation> {
+) -> ErrorsResult<Translation> {
     let url = url::generate_url(text.as_ref(), src, target)?;
     let req = CLIENT
         .get(url)
@@ -48,11 +48,7 @@ static CLIENT: Lazy<reqwest::blocking::Client> = Lazy::new(reqwest::blocking::Cl
 /// # Returns
 /// * `Translation` - The translated text.
 #[cfg(all(not(target_arch = "wasm32"), feature = "blocking"))]
-pub fn translate<S: AsRef<str>>(
-    text: S,
-    src: Lang,
-    target: Lang,
-) -> TranslationResult<Translation> {
+pub fn translate<S: AsRef<str>>(text: S, src: Lang, target: Lang) -> ErrorsResult<Translation> {
     let url = url::generate_url(text.as_ref(), src, target)?;
 
     let req = CLIENT
@@ -71,7 +67,7 @@ fn trans_from_value<S: AsRef<str>>(
     text: S,
     src: Lang,
     target: Lang,
-) -> TranslationResult<Translation> {
+) -> ErrorsResult<Translation> {
     let translated = value
         .as_str()
         .ok_or(Errors::JsonParseErr("Expected String".to_owned()))?

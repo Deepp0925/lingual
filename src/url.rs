@@ -1,11 +1,11 @@
-use crate::{token, Errors, Lang};
+use crate::{errors::ErrorsResult, token, Errors, Lang};
 use reqwest::Url;
 
 /// FIXME: Why does https return 'invalid url, scheme is not http'?
 pub(crate) const BASE_URL: &str = "http://translate.googleapis.com";
 pub(crate) const SINGLE_TRANSLATE_URL: &str = "/translate_a/single";
 
-pub fn generate_url<S: AsRef<str>>(text: S, src: Lang, target: Lang) -> Result<Url, Errors> {
+pub fn generate_url<S: AsRef<str>>(text: S, src: Lang, target: Lang) -> ErrorsResult<Url> {
     let token = token::generate_token(&text)?;
     Url::parse_with_params(
         format!("{}{}", BASE_URL, SINGLE_TRANSLATE_URL).as_str(),

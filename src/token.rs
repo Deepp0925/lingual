@@ -1,9 +1,9 @@
 use std::borrow::Cow;
 
-use errors::Errors;
+use crate::{Errors, ErrorsResult};
 
 /// will generate a token for the text
-pub(crate) fn generate_token<S: AsRef<str>>(text: S) -> Result<String, Errors> {
+pub(crate) fn generate_token<S: AsRef<str>>(text: S) -> ErrorsResult<String> {
     let b = tkk().0;
 
     let mut d = vec![];

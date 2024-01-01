@@ -3,7 +3,7 @@ mod langs;
 mod token;
 mod translation;
 mod url;
-use errors::{Errors, ErrorsResult};
+pub use errors::{Errors, ErrorsResult};
 pub use langs::*;
 use once_cell::sync::Lazy;
 use serde_json::Value;

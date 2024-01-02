@@ -19,12 +19,12 @@ static CLIENT: Lazy<reqwest::Client> = Lazy::new(reqwest::Client::new);
 /// # Returns
 /// * `Translation` - The translated text.
 #[cfg(any(target_arch = "wasm32", not(feature = "blocking")))]
-pub async fn translate<S: AsRef<str>>(
+pub async fn translate<S: AsRef<str>, L: Into<Lang> + Copy>(
     text: S,
-    src: Lang,
-    target: Lang,
+    src: L,
+    target: L,
 ) -> ErrorsResult<Translation> {
-    let url = url::generate_url(text.as_ref(), src, target)?;
+    let url = url::generate_url(text.as_ref(), src.into(), target.into())?;
     let req = CLIENT
         .get(url)
         .send()
@@ -48,8 +48,12 @@ static CLIENT: Lazy<reqwest::blocking::Client> = Lazy::new(reqwest::blocking::Cl
 /// # Returns
 /// * `Translation` - The translated text.
 #[cfg(all(not(target_arch = "wasm32"), feature = "blocking"))]
-pub fn translate<S: AsRef<str>>(text: S, src: Lang, target: Lang) -> ErrorsResult<Translation> {
-    let url = url::generate_url(text.as_ref(), src, target)?;
+pub fn translate<S: AsRef<str>, L: Into<Lang> + Copy>(
+    text: S,
+    src: L,
+    target: L,
+) -> ErrorsResult<Translation> {
+    let url = url::generate_url(text.as_ref(), src.into(), target.into())?;
 
     let req = CLIENT
         .get(url)
@@ -62,11 +66,11 @@ pub fn translate<S: AsRef<str>>(text: S, src: Lang, target: Lang) -> ErrorsResul
     trans_from_value(translated, text, src, target)
 }
 
-fn trans_from_value<S: AsRef<str>>(
+fn trans_from_value<S: AsRef<str>, L: Into<Lang>>(
     value: &Value,
     text: S,
-    src: Lang,
-    target: Lang,
+    src: L,
+    target: L,
 ) -> ErrorsResult<Translation> {
     let translated = value
         .as_str()
@@ -76,7 +80,7 @@ fn trans_from_value<S: AsRef<str>>(
     Ok(Translation {
         text: translated,
         src: text.as_ref().to_string(),
-        src_lang: src,
-        target_lang: target,
+        src_lang: src.into(),
+        target_lang: target.into(),
     })
 }

@@ -1,4 +1,4 @@
-use strum::{EnumCount, EnumIter, EnumString, IntoEnumIterator};
+use strum::{AsRefStr, EnumCount, EnumIter, EnumString, IntoEnumIterator};
 
 use crate::AccurateLang;
 /// The language codes supported by the API.
@@ -17,9 +17,9 @@ use crate::AccurateLang;
     Hash,
     Default,
     EnumCount,
+    AsRefStr,
     EnumIter,
     EnumString,
-    strum::Display,
     serde::Serialize,
     serde::Deserialize,
 )]

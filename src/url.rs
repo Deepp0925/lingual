@@ -11,9 +11,9 @@ pub fn generate_url<S: AsRef<str>>(text: S, src: Lang, target: Lang) -> ErrorsRe
         format!("{}{}", BASE_URL, SINGLE_TRANSLATE_URL).as_str(),
         &[
             ("client", "t"),
-            ("sl", src.to_string().as_str()),
-            ("tl", target.to_string().as_str()),
-            ("hl", target.to_string().as_str()),
+            ("sl", src.as_ref()),
+            ("tl", target.as_ref()),
+            ("hl", target.as_ref()),
             ("dt", "t"),
             ("ie", "UTF-8"),
             ("oe", "UTF-8"),

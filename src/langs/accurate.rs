@@ -1,5 +1,5 @@
 #![allow(dead_code)]
-use strum::{EnumCount, EnumIter, EnumString};
+use strum::{AsRefStr, EnumCount, EnumIter, EnumString};
 
 use crate::Lang;
 /// The language codes supported by the API.
@@ -33,7 +33,7 @@ use crate::Lang;
     EnumCount,
     EnumIter,
     EnumString,
-    strum::Display,
+    AsRefStr,
     serde::Serialize,
     serde::Deserialize,
 )]

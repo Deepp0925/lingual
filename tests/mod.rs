@@ -19,10 +19,10 @@ fn is_accurate_lang_test() {
 
 #[test]
 fn test_lang_enums() {
-    assert_eq!(Lang::En.to_string(), "en");
-    assert_eq!(Lang::Es.to_string(), "es");
-    assert_eq!(Lang::ZhCn.to_string(), "zh-cn");
-    assert_eq!(Lang::ZhTw.to_string(), "zh-tw");
+    assert_eq!(Lang::En.as_ref(), "en");
+    assert_eq!(Lang::Es.as_ref(), "es");
+    assert_eq!(Lang::ZhCn.as_ref(), "zh-cn");
+    assert_eq!(Lang::ZhTw.as_ref(), "zh-tw");
 
     assert_eq!(Lang::from_str("en"), Ok(Lang::En));
     assert_eq!(Lang::from_str("es"), Ok(Lang::Es));

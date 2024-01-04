@@ -5,7 +5,7 @@ use reqwest::Url;
 pub(crate) const BASE_URL: &str = "http://translate.googleapis.com";
 pub(crate) const SINGLE_TRANSLATE_URL: &str = "/translate_a/single";
 
-pub fn generate_url<S: AsRef<str>>(text: S, src: Lang, target: Lang) -> ErrorsResult<Url> {
+pub fn generate_url(text: &str, src: Lang, target: Lang) -> ErrorsResult<Url> {
     let token = token::generate_token(&text)?;
     Url::parse_with_params(
         format!("{}{}", BASE_URL, SINGLE_TRANSLATE_URL).as_str(),

@@ -6,6 +6,7 @@ mod url;
 pub use errors::{Errors, ErrorsResult};
 pub use langs::*;
 use once_cell::sync::Lazy;
+use reqwest::Error;
 use serde_json::Value;
 pub use translation::Translation;
 
@@ -19,21 +20,18 @@ static CLIENT: Lazy<reqwest::Client> = Lazy::new(reqwest::Client::new);
 /// # Returns
 /// * `Translation` - The translated text.
 #[cfg(any(target_arch = "wasm32", not(feature = "blocking")))]
-pub async fn translate<S: AsRef<str>, L: Into<Lang> + Copy>(
-    text: S,
+pub async fn translate<L: Into<Lang> + Copy>(
+    text: &str,
     src: L,
     target: L,
 ) -> ErrorsResult<Translation> {
-    let url = url::generate_url(text.as_ref(), src.into(), target.into())?;
+    let url = url::generate_url(text, src.into(), target.into())?;
     let req = CLIENT
         .get(url)
         .send()
         .await
         .map_err(|e| Errors::HttpErr(e.to_string()))?;
-    let translated = &req
-        .json::<Value>()
-        .await
-        .map_err(|err| Errors::JsonParseErr(err.to_string()))?[0][0][0];
+    let translated = req.json::<Value>().await;
 
     trans_from_value(translated, text, src, target)
 }
@@ -48,38 +46,29 @@ static CLIENT: Lazy<reqwest::blocking::Client> = Lazy::new(reqwest::blocking::Cl
 /// # Returns
 /// * `Translation` - The translated text.
 #[cfg(all(not(target_arch = "wasm32"), feature = "blocking"))]
-pub fn translate<S: AsRef<str>, L: Into<Lang> + Copy>(
-    text: S,
-    src: L,
-    target: L,
-) -> ErrorsResult<Translation> {
+pub fn translate<L: Into<Lang> + Copy>(text: &str, src: L, target: L) -> ErrorsResult<Translation> {
     let url = url::generate_url(text.as_ref(), src.into(), target.into())?;
 
     let req = CLIENT
         .get(url)
         .send()
         .map_err(|e| Errors::HttpErr(e.to_string()))?;
-    let translated = &req
-        .json::<Value>()
-        .map_err(|err| Errors::JsonParseErr(err.to_string()))?[0][0][0];
+    let translated = req.json::<Value>();
 
     trans_from_value(translated, text, src, target)
 }
 
-fn trans_from_value<S: AsRef<str>, L: Into<Lang>>(
-    value: &Value,
-    text: S,
+fn trans_from_value<L: Into<Lang>>(
+    value: Result<Value, Error>,
+    text: &str,
     src: L,
     target: L,
 ) -> ErrorsResult<Translation> {
-    let translated = value
-        .as_str()
-        .ok_or(Errors::JsonParseErr("Expected String".to_owned()))?
-        .to_string();
+    let translated = value.map_err(|err| Errors::JsonParseErr(err.to_string()))?;
 
     Ok(Translation {
         text: translated,
-        src: text.as_ref().to_string(),
+        src: text,
         src_lang: src.into(),
         target_lang: target.into(),
     })

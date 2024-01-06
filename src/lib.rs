@@ -64,7 +64,44 @@ fn trans_from_value<L: Into<Lang>>(
     src: L,
     target: L,
 ) -> ErrorsResult<Translation> {
-    let translated = value.map_err(|err| Errors::JsonParseErr(err.to_string()))?;
+    let mut translated = value.map_err(|err| Errors::JsonParseErr(err.to_string()))?;
+    let translated = translated
+        .as_array_mut()
+        .ok_or_else(|| {
+            Errors::JsonParseErr("Expected a JSON array, but got something else.".to_string())
+        })?
+        .drain(0..1)
+        .next()
+        .ok_or_else(|| {
+            Errors::JsonParseErr("Expected a JSON array, but got something else.".to_string())
+        })?
+        .as_array_mut()
+        .ok_or_else(|| {
+            Errors::JsonParseErr("Expected a JSON array, but got something else.".to_string())
+        })?
+        .drain(0..1)
+        .next()
+        .ok_or_else(|| {
+            Errors::JsonParseErr("Expected a JSON array, but got something else.".to_string())
+        })?
+        .as_array_mut()
+        .ok_or_else(|| {
+            Errors::JsonParseErr("Expected a JSON array, but got something else.".to_string())
+        })?
+        .drain(0..1)
+        .next()
+        .ok_or_else(|| {
+            Errors::JsonParseErr("Expected a JSON array, but got something else.".to_string())
+        })?;
+
+    let translated = match translated {
+        Value::String(s) => s,
+        _ => {
+            return Err(Errors::JsonParseErr(
+                "Expected a JSON string, but got something else.".to_string(),
+            ))
+        }
+    };
 
     Ok(Translation {
         text: translated,

@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 use strum::{AsRefStr, EnumCount, EnumIter, EnumString};
 
-use crate::Lang;
+use super::Lang;
 /// The language codes supported by the API.
 /// It is also possible to use strings like "en" or "fr" instead of the enum variants but it is not recommended
 /// because it is not checked at compile time, therefore it is eliminated by default features.
@@ -37,7 +37,6 @@ use crate::Lang;
     serde::Serialize,
     serde::Deserialize,
 )]
-#[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
 #[strum(serialize_all = "kebab-case")]
 pub enum AccurateLang {
     #[default]

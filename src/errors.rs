@@ -1,7 +1,7 @@
-pub type ErrorsResult<T> = Result<T, Errors>;
+pub type TranslationResult<T> = Result<T, TranslationError>;
 
 #[derive(Debug)]
-pub enum Errors {
+pub enum TranslationError {
     /// An error occurred while generating the token which is normally
     /// caused by an parsing error of an integer.
     ParseIntErr,

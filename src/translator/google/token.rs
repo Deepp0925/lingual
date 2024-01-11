@@ -1,9 +1,9 @@
 use std::borrow::Cow;
 
-use crate::{Errors, ErrorsResult};
+use crate::{TranslationError, TranslationResult};
 
 /// will generate a token for the text
-pub(crate) fn generate_token<S: AsRef<str>>(text: S) -> ErrorsResult<String> {
+pub(crate) fn generate_token<S: AsRef<str>>(text: S) -> TranslationResult<String> {
     let b = tkk().0;
 
     let mut d = vec![];
@@ -36,13 +36,15 @@ pub(crate) fn generate_token<S: AsRef<str>>(text: S) -> ErrorsResult<String> {
         }
     }
 
-    let mut a = b.parse::<i64>().map_err(|_| Errors::ParseIntErr)?;
+    let mut a = b
+        .parse::<i64>()
+        .map_err(|_| TranslationError::ParseIntErr)?;
     for c in d {
         a += c;
-        a = wr(a, "+-a^+6").ok_or(Errors::ParseIntErr)?;
+        a = wr(a, "+-a^+6").ok_or(TranslationError::ParseIntErr)?;
     }
 
-    a = wr(a, "+-3^+b+-f").ok_or(Errors::ParseIntErr)?;
+    a = wr(a, "+-3^+b+-f").ok_or(TranslationError::ParseIntErr)?;
     a ^= tkk().1;
 
     if 0 > a {
@@ -54,7 +56,9 @@ pub(crate) fn generate_token<S: AsRef<str>>(text: S) -> ErrorsResult<String> {
     Ok(format!(
         "{}.{}",
         a,
-        a ^ b.parse::<i64>().map_err(|_| Errors::ParseIntErr)?
+        a ^ b
+            .parse::<i64>()
+            .map_err(|_| TranslationError::ParseIntErr)?
     ))
 }
 

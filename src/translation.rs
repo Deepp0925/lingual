@@ -5,6 +5,6 @@ use crate::langs::Lang;
 pub struct Translation<'a> {
     pub text: String,
     pub src: &'a str,
-    pub src_lang: Lang,
-    pub target_lang: Lang,
+    pub src_lang: &'a Lang,
+    pub target_lang: &'a Lang,
 }

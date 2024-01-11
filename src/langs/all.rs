@@ -1,6 +1,6 @@
 use strum::{AsRefStr, EnumCount, EnumIter, EnumString, IntoEnumIterator};
 
-use crate::AccurateLang;
+use super::AccurateLang;
 /// The language codes supported by the API.
 /// It is also possible to use strings like "en" or "fr" instead of the enum variants but it is not recommended
 /// because it is not checked at compile time, therefore it is eliminated by default features.
@@ -23,7 +23,6 @@ use crate::AccurateLang;
     serde::Serialize,
     serde::Deserialize,
 )]
-#[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
 #[strum(serialize_all = "kebab-case")]
 pub enum Lang {
     #[default]
@@ -140,7 +139,6 @@ pub enum Lang {
     Su,
     Sw,
     Sv,
-    // Tl,
     Tg,
     Ta,
     Tt,
@@ -320,27 +318,3 @@ impl Lang {
         }
     }
 }
-
-// pub trait OptionLangExt {
-//     /// returns the language if it is set, otherwise returns default src: `Lang::Auto`
-//     fn unwrap_or_default_src(&self) -> Lang;
-//     /// returns the language if it is set, otherwise returns default target: `Lang::En`
-//     fn unwrap_or_default_trgt(&self) -> Lang;
-// }
-
-// impl OptionLangExt for Option<Lang> {
-//     /// returns the language if it is set, otherwise returns default src: `Lang::Auto`
-//     fn unwrap_or_default_src(&self) -> Lang {
-//         match self {
-//             None => Lang::Auto,
-//             Some(l) => *l,
-//         }
-//     }
-//     /// returns the language if it is set, otherwise returns default target: `Lang::En`
-//     fn unwrap_or_default_trgt(&self) -> Lang {
-//         match self {
-//             None => Lang::En,
-//             Some(l) => *l,
-//         }
-//     }
-// }

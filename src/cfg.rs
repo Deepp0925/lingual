@@ -39,68 +39,84 @@
 /// }
 ///```
 ///
-
+#[macro_export]
 macro_rules! cfg_gen_blocking  {
+    ($($item:item)*) => {
+        $(
+            #[cfg_attr(all(not(target_arch = "wasm32"), feature = "blocking"), remove_async_await::remove_async_await)]
+            // adds docs to the generated function
+            $item
+
+        )*
+    }
+}
+
+/// Adds the cfg "default" feature any item that is wrapped in this macro will be added to the
+/// # Example
+/// ```
+/// cfg_non_blocking! {
+///   async fn hello() -> String {
+///     "hello".to_string()
+///    }
+/// }
+///
+/// // will generate this code
+///
+/// #[cfg(any(target_arch = "wasm32", not(feature = "blocking")))]
+/// async fn hello() -> String {
+///     "hello".to_string()
+/// }
+/// ```
+#[macro_export]
+macro_rules! cfg_non_blocking {
     ($($item:item)*) => {
         $(
             #[cfg(any(target_arch = "wasm32", not(feature = "blocking")))]
             $item
 
-            #[cfg(all(not(target_arch = "wasm32"), feature = "blocking"))]
-            cfg_remove_async! {
-                $item
-            }
         )*
     }
 }
 
-/// removes the async keyword and the .await keyword from the function.
+/// adds the cfg "blocking" feature to any item that is wrapped in this macro.
 /// # Example
 /// ```
-/// cfg_remove_async! {
-///     async fn hello() -> String {
+/// cfg_blocking! {
+///     fn hello() -> String {
 ///         "hello".to_string()
 ///     }
 ///
-///     async fn send_request() -> String {
-///         let response = reqwest::get("https://www.google.com").await.unwrap();
-///         response.text().await.unwrap()
-///     }
+///     static HELLO: String = "hello".to_string();
 /// }
 ///
 /// // will generate this code
 ///
+/// #[cfg(all(not(target_arch = "wasm32"), feature = "blocking"))]
 /// fn hello() -> String {
 ///     "hello".to_string()
 /// }
 ///
-/// fn send_request() -> String {
-///     let response = reqwest::get("https://www.google.com").unwrap();
-///     response.text().unwrap()
-/// }
+/// #[cfg(all(not(target_arch = "wasm32"), feature = "blocking"))]
+/// static HELLO: String = "hello".to_string();
+///
 /// ```
-macro_rules! cfg_remove_async {
+#[macro_export]
+macro_rules! cfg_blocking {
     ($($item:item)*) => {
+        $(
+            #[cfg(all(not(target_arch = "wasm32"), feature = "blocking"))]
+            $item
 
-            $(#[$attr:meta])*
-            $vis:vis async fn $fn_name:ident $($rest:tt)* => {
-                $(#[$attr])*
-                $vis fn $fn_name $($rest)*
-            }
-
-    };
+        )*
+    }
 }
 
-#[test]
-fn test_cfg_remove_async() {
+/// To test this expand the macro using rust analyzer's macro expansion feature while having the
+/// cfg_gen_blocking! macro selected.
+fn _cfg_remove_async() {
     cfg_gen_blocking! {
-        async fn hello() -> String {
+        async fn hello(_t: String) -> String {
             "hello".to_string()
-        }
-
-        async fn send_request() -> String {
-            let response = reqwest::get("https://www.google.com").await.unwrap();
-            response.text().await.unwrap()
         }
     }
 }

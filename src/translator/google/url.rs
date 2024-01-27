@@ -30,5 +30,5 @@ pub fn generate_url(text: &str, src: &Lang, target: &Lang) -> TranslationResult<
             ("q", text),
         ],
     )
-    .map_err(|_| TranslationError::UrlParseErr)
+    .map_err(|_| TranslationError::UrlParseErr(text.to_string()))
 }

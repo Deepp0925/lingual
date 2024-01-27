@@ -38,13 +38,13 @@ pub(crate) fn generate_token<S: AsRef<str>>(text: S) -> TranslationResult<String
 
     let mut a = b
         .parse::<i64>()
-        .map_err(|_| TranslationError::ParseIntErr)?;
+        .map_err(|_| TranslationError::ParseIntErr(text.as_ref().to_string()))?;
     for c in d {
         a += c;
-        a = wr(a, "+-a^+6").ok_or(TranslationError::ParseIntErr)?;
+        a = wr(a, "+-a^+6").ok_or(TranslationError::ParseIntErr(text.as_ref().to_string()))?;
     }
 
-    a = wr(a, "+-3^+b+-f").ok_or(TranslationError::ParseIntErr)?;
+    a = wr(a, "+-3^+b+-f").ok_or(TranslationError::ParseIntErr(text.as_ref().to_string()))?;
     a ^= tkk().1;
 
     if 0 > a {
@@ -58,7 +58,7 @@ pub(crate) fn generate_token<S: AsRef<str>>(text: S) -> TranslationResult<String
         a,
         a ^ b
             .parse::<i64>()
-            .map_err(|_| TranslationError::ParseIntErr)?
+            .map_err(|_| TranslationError::ParseIntErr(text.as_ref().to_string()))?
     ))
 }
 

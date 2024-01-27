@@ -4,14 +4,12 @@ pub type TranslationResult<T> = Result<T, TranslationError>;
 pub enum TranslationError {
     /// An error occurred while generating the token which is normally
     /// caused by an parsing error of an integer.
-    ParseIntErr,
+    ParseIntErr(String),
     /// An error occurred while sending the request to the server.
     HttpErr(String),
     /// An error occurred while parsing the url.
-    UrlParseErr,
+    UrlParseErr(String),
     /// An error occurred while parsing the json.
     /// This error is normally caused by an invalid json.
     JsonParseErr(String),
-    /// An error occurred while parsing the regex.
-    RegexErr(String),
 }

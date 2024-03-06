@@ -54,6 +54,7 @@ pub enum Lang {
     Doi,
     Nl,
     En,
+    EnUS,
     Eo,
     Et,
     Ee,
@@ -315,6 +316,7 @@ impl Lang {
             Lang::Yi => "Yiddish",
             Lang::Yo => "Yoruba",
             Lang::Zu => "Zulu",
+            _ => todo!(),
         }
     }
 }

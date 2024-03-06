@@ -89,3 +89,15 @@ async fn test_translate() {
 
     assert_eq!(err_count, 2);
 }
+
+#[cfg_attr(not(feature = "blocking"), tokio::test)]
+#[cfg_attr(feature = "blocking", remove_async_await::remove_async_await, test)]
+async fn trial() {
+    let translator = Translator::default();
+    let translation = translator
+        .translate("Hola Mundo", &Lang::Auto, &Lang::EnUS)
+        .await
+        .unwrap();
+    println!("{:?}", translation);
+    assert_eq!("Hello World", translation.text);
+}

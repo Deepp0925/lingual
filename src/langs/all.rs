@@ -316,7 +316,6 @@ impl Lang {
             Lang::Yi => "Yiddish",
             Lang::Yo => "Yoruba",
             Lang::Zu => "Zulu",
-            _ => todo!(),
         }
     }
 }

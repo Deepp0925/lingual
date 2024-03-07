@@ -3,8 +3,8 @@ mod google;
 use crate::{
     cfg_blocking, cfg_gen_blocking, cfg_non_blocking, Lang, Translation, TranslationResult,
 };
-use deepl::{deepl_free_translate, deepl_pro_translate};
-use google::*;
+use deepl::deepl_translate;
+use google::google_translate;
 use once_cell::sync::Lazy;
 
 cfg_non_blocking! {
@@ -58,8 +58,8 @@ impl Translator {
         ) -> TranslationResult<Translation<'a>> {
             match self {
                 Translator::GoogleFree => google_translate(text, from, to).await,
-                Translator::DeeplPro(api_key) => deepl_pro_translate(api_key, text, from, to).await,
-                Translator::DeeplFree(api_key) => deepl_free_translate(api_key, text, from, to).await,
+                Translator::DeeplPro(api_key) => deepl_translate(false, api_key, text, from, to).await,
+                Translator::DeeplFree(api_key) => deepl_translate(true, api_key, text, from, to).await,
             }
         }
     }
